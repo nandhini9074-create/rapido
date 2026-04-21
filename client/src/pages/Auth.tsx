@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { User, ShieldCheck, Bike, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 
-type Role = "user" | "Driver" | "admin";
+type Role = "user" | "driver" | "admin";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
