@@ -13,7 +13,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (identifier: string, password: string, role: Role) => Promise<void>;
-  register: (data: { name: string; phone: string; password: string; vehicle_no?: string; role: Role }) => Promise<void>;
+  register: (data: { name: string; phone: string; password: string; vehicle_no?: string; vehicle_type?: "Bike" | "Auto"; role: Role }) => Promise<void>;
   logout: () => void;
   loading: boolean;
   error: string | null;
@@ -67,11 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async ({ name, phone, password, vehicle_no, role }: { name: string; phone: string; password: string; vehicle_no?: string; role: Role }) => {
+  const register = async ({ name, phone, password, vehicle_no, vehicle_type, role }: { name: string; phone: string; password: string; vehicle_no?: string; vehicle_type?: "Bike" | "Auto"; role: Role }) => {
     setError(null);
     try {
       const endpoint = role === "driver" ? "/drivers/" : "/users/";
-      const body = role === "driver" ? { name, phone, password, vehicle_no } : { name, phone, password };
+      const body = role === "driver" ? { name, phone, password, vehicle_no, vehicle_type } : { name, phone, password };
       
       const res = await fetch(`${BACKEND_URL}${endpoint}`, {
         method: "POST",

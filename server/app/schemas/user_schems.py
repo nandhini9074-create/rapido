@@ -7,6 +7,15 @@ class UserCreate(BaseModel):
     phone: str = Field(..., min_length=10, max_length=10, pattern=r'^\d{10}$')
     password: str
 
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        import re
+        pattern = r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#\$%&!])[^\s]{6,}$'
+        if not re.search(pattern, v):
+            raise ValueError("Password must be at least 6 characters long and a combination of alphabets, numbers and symbols.")
+        return v
+
 class UserUpdate(BaseModel):
     name: str | None = None
     phone: str | None = Field(None, min_length=10, max_length=10, pattern=r'^\d{10}$')

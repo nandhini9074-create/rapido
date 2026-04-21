@@ -14,6 +14,7 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [vehicleNo, setVehicleNo] = useState("");
+  const [vehicleType, setVehicleType] = useState<"Bike" | "Auto">("Bike");
   const [isLoading, setIsLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const { login, register, error } = useAuth();
@@ -40,8 +41,9 @@ export default function AuthPage() {
     }
 
     if (!isLogin) {
-      if (password.length !== 4 || !/^\d{4}$/.test(password)) {
-        setValidationError("Password must be exactly a 4-digit number.");
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#\$%&!])[^\s]{6,}$/;
+      if (!passwordRegex.test(password)) {
+        setValidationError("Password must be at least 6 characters long and include alphabets, numbers, and symbols.");
         return;
       }
     }
@@ -51,7 +53,7 @@ export default function AuthPage() {
       if (isLogin) {
         await login(finalPhone, password, role);
       } else {
-        await register({ name, phone: finalPhone, password, vehicle_no: vehicleNo, role });
+        await register({ name, phone: finalPhone, password, vehicle_no: vehicleNo, role, vehicle_type: vehicleType });
       }
       navigate("/dashboard");
     } catch (err) {
@@ -141,33 +143,41 @@ export default function AuthPage() {
               <label className="text-[10px] uppercase font-black tracking-widest text-slate-500 ml-1">Password</label>
               <input
                 type="password"
-                inputMode={role !== "admin" ? "numeric" : "text"}
+                inputMode="text"
                 required
                 value={password}
                 onChange={(e) => {
-                  if (role !== "admin" && !isLogin) {
-                    const val = e.target.value.replace(/\D/g, "");
-                    if (val.length <= 4) setPassword(val);
-                  } else {
-                    setPassword(e.target.value);
-                  }
+                  setPassword(e.target.value);
                 }}
                 className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-rapido-yellow/50 transition-colors text-sm"
-                placeholder={role !== "admin" && !isLogin ? "•••• (4 digits)" : "••••••••"}
+                placeholder={!isLogin ? "Password (min 6 chars)" : "••••••••"}
               />
             </div>
             {role === "driver" && !isLogin && (
-              <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-black tracking-widest text-slate-500 ml-1">Vehicle Number</label>
-                <input
-                  type="text"
-                  required
-                  value={vehicleNo}
-                  onChange={(e) => setVehicleNo(e.target.value)}
-                  className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-rapido-yellow/50 transition-colors text-sm"
-                  placeholder="KA-01-AB-1234"
-                />
-              </div>
+              <>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase font-black tracking-widest text-slate-500 ml-1">Vehicle Type</label>
+                  <select
+                    value={vehicleType}
+                    onChange={(e) => setVehicleType(e.target.value as "Bike" | "Auto")}
+                    className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-rapido-yellow/50 transition-colors text-sm appearance-none cursor-pointer"
+                  >
+                    <option value="Bike" className="bg-[#1e293b]">Bike</option>
+                    <option value="Auto" className="bg-[#1e293b]">Auto</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase font-black tracking-widest text-slate-500 ml-1">Vehicle Number</label>
+                  <input
+                    type="text"
+                    required
+                    value={vehicleNo}
+                    onChange={(e) => setVehicleNo(e.target.value)}
+                    className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-rapido-yellow/50 transition-colors text-sm"
+                    placeholder="KA-01-AB-1234"
+                  />
+                </div>
+              </>
             )}
 
           {(error || validationError) && (

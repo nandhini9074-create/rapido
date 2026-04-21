@@ -3,12 +3,13 @@ import app.models.user as model
 import app.schemas.user_schems as UserSchema
 import uuid
 from sqlalchemy import func
+from app.core.security import get_password_hash, verify_password
 
 def create_user(db: Session, user: UserSchema.UserCreate):
     db_user = model.User(
         name=user.name,
         phone=user.phone,
-        password=user.password
+        password=get_password_hash(user.password)
     )
 
     db.add(db_user)
@@ -34,7 +35,7 @@ def find_user_by_phone(db: Session, phone: str):
 
 def authenticate_user(db: Session, phone: str, password: str):
     user = find_user_by_phone(db, phone)
-    if user and user.password == password:
+    if user and verify_password(password, user.password):
         return user
     return None
 

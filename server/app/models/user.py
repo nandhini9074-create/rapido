@@ -11,7 +11,6 @@ class User(Base):
     __tablename__ = "users"
     __table_args__ = (
         CheckConstraint("length(phone) = 10", name="phone_len_check"),
-        CheckConstraint("length(password) = 4 AND password ~ '^[0-9]+$'", name="password_format_check"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(

@@ -9,9 +9,7 @@ from typing import Optional
 
 class Admin(Base):
     __tablename__ = "admins"
-    __table_args__ = (
-        CheckConstraint("length(password) = 4 AND password ~ '^[0-9]+$'", name="admin_password_format_check"),
-    )
+    __table_args__ = ()
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),

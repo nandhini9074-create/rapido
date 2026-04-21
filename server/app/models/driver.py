@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import String, Boolean, TIMESTAMP, func, CheckConstraint
+from sqlalchemy import String, Boolean, TIMESTAMP, func, CheckConstraint, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
@@ -11,7 +11,6 @@ class Driver(Base):
     __tablename__ = "drivers"
     __table_args__ = (
         CheckConstraint("length(phone) = 10", name="phone_len_check"),
-        CheckConstraint("length(password) = 4 AND password ~ '^[0-9]+$'", name="password_format_check"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -25,7 +24,9 @@ class Driver(Base):
     password: Mapped[str] = mapped_column(String, nullable=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     vehicle_no: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    is_available:Mapped[bool] = mapped_column(Boolean, default=True)
+    is_available: Mapped[bool] = mapped_column(Boolean, default=True)
+    
+    vehicle_type: Mapped[str] = mapped_column(String)
 
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
@@ -42,3 +43,24 @@ class Driver(Base):
         TIMESTAMP(timezone=True),
         nullable=True
     )
+
+    __mapper_args__ = {
+        "polymorphic_on": vehicle_type,
+        "polymorphic_identity": "driver"
+    }
+
+class BikeDriver(Driver):
+    __tablename__ = "bike_drivers"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("drivers.id"), primary_key=True)
+    
+    __mapper_args__ = {
+        "polymorphic_identity": "Bike",
+    }
+
+class AutoDriver(Driver):
+    __tablename__ = "auto_drivers"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("drivers.id"), primary_key=True)
+    
+    __mapper_args__ = {
+        "polymorphic_identity": "Auto",
+    }

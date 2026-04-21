@@ -5,6 +5,7 @@ import uuid
 import app.models.driver as model
 import app.models.user as user_model
 from app.schemas.driver_schema import DriverCreate
+from app.core.security import get_password_hash, verify_password
 
 def get_available_driver(db: Session):
     return db.query(model.Driver).filter(
@@ -19,16 +20,24 @@ def create_driver(db: Session, driver: DriverCreate):
         db_user = user_model.User(
             name=driver.name,
             phone=driver.phone,
-            password=driver.password
+            password=get_password_hash(driver.password)
         )
         db.add(db_user)
 
-    db_driver = model.Driver(
-        name=driver.name,
-        phone=driver.phone,
-        password=driver.password,
-        vehicle_no=driver.vehicle_no
-    )
+    if driver.vehicle_type == "Bike":
+        db_driver = model.BikeDriver(
+            name=driver.name,
+            phone=driver.phone,
+            password=get_password_hash(driver.password),
+            vehicle_no=driver.vehicle_no
+        )
+    else:
+        db_driver = model.AutoDriver(
+            name=driver.name,
+            phone=driver.phone,
+            password=get_password_hash(driver.password),
+            vehicle_no=driver.vehicle_no
+        )
 
     db.add(db_driver)
     try:
@@ -58,7 +67,7 @@ def find_driver_by_phone(db: Session, phone: str):
 
 def authenticate_driver(db: Session, phone: str, password: str):
     driver = find_driver_by_phone(db, phone)
-    if driver and driver.password == password:
+    if driver and verify_password(password, driver.password):
         return driver
     return None
 

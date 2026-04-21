@@ -640,7 +640,7 @@ function AdminView() {
                           <code className="text-[10px] bg-white/5 px-2 py-1 rounded text-slate-400 font-mono">{item.id.slice(0, 8)}</code>
                         </td>
                         <td className="py-6 text-right">
-                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                          <div className="flex justify-end gap-2 transition-all">
                             <button 
                               onClick={() => handleEditClick(item)}
                               className="p-3 bg-rapido-yellow/10 text-rapido-yellow rounded-xl hover:bg-rapido-yellow/20 transition-all"
