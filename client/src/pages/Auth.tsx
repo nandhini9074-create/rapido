@@ -134,7 +134,16 @@ export default function AuthPage() {
                 type={role === "admin" ? "email" : "tel"}
                 required
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                maxLength={role === "admin" ? undefined : 10}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (role !== "admin") {
+                    const numericValue = val.replace(/\D/g, "");
+                    setPhone(numericValue);
+                  } else {
+                    setPhone(val);
+                  }
+                }}
                 className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-rapido-yellow/50 transition-colors text-sm"
                 placeholder={role === "admin" ? "admin@rapido.com" : "9876543210"}
               />
