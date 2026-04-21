@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-rapido-yellow: #f6c915;
+  --color-rapido-black: #1a1a1a;
+  --color-glass-bg: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-[#0f172a] text-slate-100 font-sans;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .mesh-gradient-1 {
+    @apply absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-yellow-500/20 rounded-full blur-[120px] pointer-events-none;
+  }
+  
+  .mesh-gradient-2 {
+    @apply absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none;
+  }
+}

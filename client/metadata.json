@@ -1,0 +1,6 @@
+{
+  "name": "Rapido Clone",
+  "description": "A ride-sharing platform connecting users and drivers with real-time tracking and admin management.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["real-time tracking", "multi-persona auth", "ride management"]
+}
