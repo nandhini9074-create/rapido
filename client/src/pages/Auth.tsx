@@ -146,11 +146,12 @@ export default function AuthPage() {
                 inputMode="text"
                 required
                 value={password}
+                maxLength={6}
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
                 className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-rapido-yellow/50 transition-colors text-sm"
-                placeholder={!isLogin ? "Password (min 6 chars)" : "••••••••"}
+                placeholder={!isLogin ? "Password (min 6 chars)" : "••••••"}
               />
             </div>
             {role === "driver" && !isLogin && (
